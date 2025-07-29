@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request
 import openai
 import os
@@ -12,19 +13,22 @@ def home():
     caption = None
     if request.method == "POST":
         prompt = request.form.get("prompt")
-        try:
-            response = openai.Completion.create(
-                engine="text-davinci-003",
-                prompt=f"Generate an Instagram caption with hashtags for: {prompt}",
-                max_tokens=100
-            )
-            caption = response.choices[0].text.strip()
-        except Exception as e:
-            caption = f"Error: {e}"
-    return render_template("index.html", caption=caption)
+        if prompt:
+            try:
+                response = openai.Completion.create(
+                    engine="text-davinci-003",
+                    prompt=f"Generate an Instagram caption with hashtags for: {prompt}",
+                    max_tokens=100
+                )
+                caption = response.choices[0].text.strip()
+            except Exception as e:
+                caption = f"Error: {e}"
+    return render_template("index.html", caption=caption or "")
+
+# Health check (HEAD/other requests handle karne ke liye)
+@app.route("/healthz", methods=["GET", "HEAD"])
+def health():
+    return "OK", 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-
-
