@@ -5,17 +5,15 @@ import os
 
 app = Flask(__name__)
 
-# OpenAI API key
+# Load API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-@app.route("/", methods=["GET", "POST", "HEAD"])
+@app.route("/", methods=["GET", "POST"])
 def home():
-    if request.method == "HEAD":
-        return "", 200  # HEAD request ke liye empty response
     caption = None
     if request.method == "POST":
-        prompt = request.form.get("prompt", "")
-        if prompt.strip() != "":
+        prompt = request.form.get("prompt")
+        if prompt:
             try:
                 response = openai.Completion.create(
                     engine="text-davinci-003",
@@ -24,9 +22,9 @@ def home():
                 )
                 caption = response.choices[0].text.strip()
             except Exception as e:
-                caption = f"Error: {e}"
+                caption = f"Error: {str(e)}"
     return render_template("index.html", caption=caption)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0'
+    app.run(host="0.0.0.0", port=port)
