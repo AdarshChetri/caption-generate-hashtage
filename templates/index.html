@@ -16,4 +16,10 @@
 <body>
     <h1>Instagram Caption & Hashtag Generator</h1>
     <form method="POST">
-        <input type="text" name="prompt" placeholder="Enter your
+        <input type="text" name="prompt" placeholder="Enter your idea for caption">
+        <button type="submit">Generate</button>
+    </form>
+
+    {% if caption %}
+    <div class="result">
+        <h3>Gen
