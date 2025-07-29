@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# Load OpenAI API key from environment variable
+# OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/", methods=["GET", "POST"])
@@ -15,7 +15,7 @@ def home():
         try:
             response = openai.Completion.create(
                 engine="text-davinci-003",
-                prompt=f"Generate an engaging Instagram caption with hashtags for: {prompt}",
+                prompt=f"Generate an Instagram caption with hashtags for: {prompt}",
                 max_tokens=100
             )
             caption = response.choices[0].text.strip()
@@ -23,7 +23,8 @@ def home():
             caption = f"Error: {e}"
     return render_template("index.html", caption=caption)
 
-# For Render deployment
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
+
