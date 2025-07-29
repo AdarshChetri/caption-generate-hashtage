@@ -3,22 +3,25 @@ import openai
 import os
 
 app = Flask(__name__)
+
+# OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/", methods=["GET", "POST"])
-def index():
-    caption = ""
+def home():
+    caption = None
     if request.method == "POST":
         prompt = request.form["prompt"]
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=f"Generate a creative Instagram caption with hashtags for: {prompt}",
-            max_tokens=60
-        )
-        caption = response.choices[0].text.strip()
+        try:
+            response = openai.Completion.create(
+                engine="text-davinci-003",
+                prompt=f"Generate an Instagram caption with hashtags for: {prompt}",
+                max_tokens=100
+            )
+            caption = response.choices[0].text.strip()
+        except Exception as e:
+            caption = f"Error: {e}"
     return render_template("index.html", caption=caption)
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-
+    app.run(host="0.0.0.0", port=5000)
